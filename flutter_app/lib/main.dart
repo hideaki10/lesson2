@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app_life_cycle.dart';
+import 'package:flutter_app/flutter_widget_lifecycle.dart';
+import 'package:flutter_app/launch_page.dart';
+import 'package:flutter_app/logo_app.dart';
+import 'package:flutter_app/photo_app_page.dart';
+import 'package:flutter_app/res_page.dart';
 import 'package:flutter_app/statefull_group_page.dart';
 import 'flutter_layout_page.dart';
 import 'gesture_page.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(DynamicTheme());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class DynamicTheme extends StatefulWidget {
+  @override
+  _DynamicThemeState createState() => _DynamicThemeState();
+}
+
+class _DynamicThemeState extends State<DynamicTheme> {
+
+  Brightness _brightness = Brightness.dark;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,28 +35,97 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
+        //fontFamily: 'Anton',
+        brightness: _brightness,
         primarySwatch: Colors.blue,
+
       ),
-      routes: <String,WidgetBuilder>{
-        'ful':(BuildContext context) => StatefulGroup(),
-        'layout':(BuildContext context) => FlutterLayoutPage(),
+      routes: <String, WidgetBuilder>{
+        'ful': (BuildContext context) => StatefulGroup(),
+        'layout': (BuildContext context) => FlutterLayoutPage(),
         'gensture': (BuildContext context) => GesturePage(),
+        'respage': (BuildContext context) => ResPage(),
+        'lanuch': (BuildContext context) => LaunchPage(),
+        'lifecycle': (BuildContext context) => WidgetLifeCycle(),
+        'applife': (BuildContext context) => AppLifeCycle(),
+        'photo':(BuildContext context) => PhotoAppPage(),
+        'logoapp':(BuildContext context) => LogoApp(),
       },
       home: Scaffold(
         appBar: AppBar(
           title: Text('dwdwdw'),
           leading: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back),
           ),
         ),
-        body: RouterNavigator(),
+        body: Column(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: (){
+                setState(() {
+                  if(_brightness == Brightness.dark){
+                    _brightness = Brightness.light;
+                  }else{
+                    _brightness = Brightness.dark;
+                  }
+                });
+              },
+              child: Text("Theme", style: TextStyle(fontFamily: 'Anton'),),
+            ),
+            RouterNavigator(),
+          ],
+        ),
       ),
     );
   }
 }
+
+//class MyApp extends StatelessWidget {
+//  // This widget is the root of your application.
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return MaterialApp(
+//      title: 'Flutter Demo',
+//      theme: ThemeData(
+//        // This is the theme of your application.
+//        //
+//        // Try running your application with "flutter run". You'll see the
+//        // application has a blue toolbar. Then, without quitting the app, try
+//        // changing the primarySwatch below to Colors.green and then invoke
+//        // "hot reload" (press "r" in the console where you ran "flutter run",
+//        // or simply save your changes to "hot reload" in a Flutter IDE).
+//        // Notice that the counter didn't reset back to zero; the application
+//        // is not restarted.
+//        primarySwatch: Colors.blue,
+//      ),
+//      routes: <String,WidgetBuilder>{
+//        'ful':(BuildContext context) => StatefulGroup(),
+//        'layout':(BuildContext context) => FlutterLayoutPage(),
+//        'gensture': (BuildContext context) => GesturePage(),
+//        'respage':(BuildContext context) => ResPage(),
+//        'lanuch':(BuildContext context) => LaunchPage(),
+//        'lifecycle':(BuildContext context) => WidgetLifeCycle(),
+//        'applife':(BuildContext context) => AppLifeCycle(),
+//      },
+//      home: Scaffold(
+//        appBar: AppBar(
+//          title: Text('dwdwdw'),
+//          leading: GestureDetector(
+//            onTap: (){
+//              Navigator.pop(context);
+//            },
+//            child: Icon(Icons.arrow_back),
+//          ),
+//        ),
+//        body: RouterNavigator(),
+//      ),
+//    );
+//  }
+//}
 
 class RouterNavigator extends StatefulWidget {
 //  RouterNavigator({Key key, this.title}) : super(key: key);
@@ -57,7 +139,7 @@ class RouterNavigator extends StatefulWidget {
 }
 
 class _RouterNavigatorState extends State<RouterNavigator> {
- // int _counter = 0;
+  // int _counter = 0;
 
 //  void _incrementCounter() {
 //    setState(() {
@@ -70,6 +152,7 @@ class _RouterNavigatorState extends State<RouterNavigator> {
 //    });
 //  }
   bool byName = false;
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -121,38 +204,44 @@ class _RouterNavigatorState extends State<RouterNavigator> {
 //      ), // This trailing comma makes auto-formatting nicer for build methods.
 //    );
 
-   return Container(
-     child: Column(
+    return Container(
+      child: Column(
         children: <Widget>[
           SwitchListTile(
-            title: Text('${byName?'':'No'}tansfor router'),
-            value: byName,onChanged: (value){
-              setState(() {
-                byName = value;
-              });
-          }),
-          _item("fullapke",StatefulGroup(),'ful'),
-          _item("flutterlayout",FlutterLayoutPage(),'layout'),
-          _item("如何检测用户手势以及处理点击事件",GesturePage(),'gensture'),
+              title: Text('${byName ? '' : 'No'}tansfor router'),
+              value: byName,
+              onChanged: (value) {
+                setState(() {
+                  byName = value;
+                });
+              }),
+          _item("fullapke", StatefulGroup(), 'ful'),
+          _item("flutterlayout", FlutterLayoutPage(), 'layout'),
+          _item("如何检测用户手势以及处理点击事件", GesturePage(), 'gensture'),
+          _item("fss", ResPage(), 'respage'),
+          _item("ditt", LaunchPage(), 'lanuch'),
+          _item("lifcuce", WidgetLifeCycle(), 'lifecycle'),
+          _item("applife", AppLifeCycle(), 'applife'),
+          _item("photo", PhotoAppPage(), 'photo'),
+          _item("logoapp", LogoApp(), 'logoapp'),
         ],
-     ),
-   );
+      ),
+    );
   }
 
-  _item(String title,page,String routeName){
+  _item(String title, page, String routeName) {
     return Container(
-        child: RaisedButton(
-          onPressed: () {
-              if(byName){
-                Navigator.pushNamed(context, routeName);
-              }else{
-                Navigator.push(
-                  context,MaterialPageRoute(builder: (context) => page)
-                );
-              }
-          },
-          child: Text(title),
-        ),
+      child: RaisedButton(
+        onPressed: () {
+          if (byName) {
+            Navigator.pushNamed(context, routeName);
+          } else {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => page));
+          }
+        },
+        child: Text(title),
+      ),
     );
   }
 }
